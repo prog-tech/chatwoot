@@ -2,15 +2,15 @@ class ConversationDrop < BaseDrop
   include MessageFormatHelper
 
   def display_id
-    @obj.try(:display_id)
+    @obj&.display_id
   end
 
   def contact_name
-    @obj.try(:contact).name.try(:capitalize) || 'Customer'
+    @obj&.contact&.name&.capitalize || 'Customer'
   end
 
   def recent_messages
-    @obj.try(:recent_messages).map do |message|
+    Array.wrap(@obj&.recent_messages).map do |message|
       {
         'sender' => message_sender_name(message.sender),
         'content' => render_message_content(transform_user_mention_content(message.content)),
@@ -20,7 +20,7 @@ class ConversationDrop < BaseDrop
   end
 
   def custom_attribute
-    custom_attributes = @obj.try(:custom_attributes) || {}
+    custom_attributes = @obj&.custom_attributes || {}
     custom_attributes.transform_keys(&:to_s)
   end
 
